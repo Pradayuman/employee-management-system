@@ -1,0 +1,61 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Employee Analytics</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <h1>Employees per Department</h1>
+        <div style="width:400px; height:300px;">
+        <canvas id="departmentChart"></canvas>
+        </div>  
+
+        <h1>Monthly Attendance Overview</h1>
+        <div style="width:600px; height:300px;">
+        <canvas id="attendanceChart"></canvas>
+        </div>
+        
+        <canvas id="attendanceChart" width="500" height="300"></canvas>
+
+        <script>
+            // Employees per Department Pie Chart
+            const deptCtx = document.getElementById('departmentChart').getContext('2d');
+            const departmentChart = new Chart(deptCtx, {
+                type: 'pie',
+                data: {
+                    labels: {{ department_names|safe }}, // list from Django view
+                    datasets: [{
+                        data: {{ department_counts|safe }}, // list from Django view
+                        backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF']
+                    }]
+                }
+            });
+
+            // Monthly Attendance Bar Chart
+            const attCtx = document.getElementById('attendanceChart').getContext('2d');
+            const attendanceChart = new Chart(attCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ months|safe }},  // e.g., ["Jan", "Feb", "Mar"]
+                    datasets: [
+                        {
+                            label: 'Present',
+                            data: {{ present_counts|safe }},
+                            backgroundColor: '#36A2EB'
+                        },
+                        {
+                            label: 'Absent',
+                            data: {{ absent_counts|safe }},
+                            backgroundColor: '#FF6384'
+                        },
+                        {
+                            label: 'Late',
+                            data: {{ late_counts|safe }},
+                            backgroundColor: '#FFCE56'
+                        }
+                    ]
+                }
+            });
+        </script>
+    </body>
+    </html>
